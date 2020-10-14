@@ -1,0 +1,2 @@
+- useCallback主要是面向对性能需求高的同学，以及有强迫症的同学
+- useCallback的真正目的在于缓存了每次渲染时inline callbacl的实例，这样方便配合上子组件的shouldComponentUpdate或者React.memo起到减少不必要的渲染的作用
