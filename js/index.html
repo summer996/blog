@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pc客户端</title>
+</head>
+<body>
+  <!-- <div class="box">
+    <video src=""></video>
+    <button onclick="open()">打开摄像头</button>
+    <button class='shot'>拍照</button>
+    <canvas id='canvas'></canvas>
+    <img src=''>
+  </div> -->
+  <!-- <button id="btn">扫一扫</button> -->
+  <div className="title">
+    <span>Hello ConardLi</span>
+    <ul id="ul">
+      <li data="apple">苹果</li>
+      <li data="orig">橘子</li>
+    </ul>
+  </div>
+</body>
+<script>
+  let ul = document.getElementById('ul');
+  ul.addEventListener('click', function (e) {
+    debugger;
+  }, false)
+  //  var constraints = { audio: true, video: { width: 200, height: 250 } };
+  //   // 开启视频
+    
+   
+  //   function open () {
+  //     debugger;
+  //     navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+  //       console.log('getUserMedia:', mediaStream)
+  //       var video = document.querySelector('video');
+  //       video.srcObject = mediaStream;
+  //       video.onloadedmetadata = function (e) {
+  //         video.play();
+  //       };
+
+  //       // 使用canvas进行拍照
+  //       var canvas = document.getElementById('canvas')
+  //       $('button').on('click', function () {
+  //         canvas.getContext('2d').drawImage(video, 0, 0, 200, 250);
+  //         $('img').css('src', canvas.toDataURL("image/png"))
+  //       })
+
+  //     }).catch(function (err) {
+  //       console.log(err.name + ": " + err.message);
+  //     });
+  //   }
+
+  // function invokeScan () {
+  //   window['_invoke_scan_callback'] = function (result) {
+  //     debugger;
+  //   }
+
+  //   var iframe = document.createElement('iframe');
+
+  //   iframe.style.display = 'none';
+  //   iframe.src = 'weixin://dl/scan?k1=1&callback=_invoke_scan_callback';
+  //   body.appendChild(iframe);
+  // }
+  // document.addEventListener('click', function() {
+  //   invokeScan()})
+//   console.log(`<div className="title">
+//       <span>Hello ConardLi</span>
+//       <ul>
+//         <li>苹果</li>
+//         <li>橘子</li>
+//       </ul>
+// </div>`)
+</script>
+</html>
