@@ -135,3 +135,13 @@ Promise.defer = Promise.deferred = function () {
 
   return dfd;
 }
+
+
+
+const pro1 = new Promise((resolve, reject) => {
+  resolve(333)
+})
+
+pro2 = pro1.then((value) => { console.log(value); throw "fsasdf" }, (error) => { console.log(error) });
+
+pro2.then((value) => { console.log(value) }, (error) => { console.log(error) })
