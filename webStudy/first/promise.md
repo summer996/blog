@@ -24,7 +24,20 @@
    3. 根据当前的promise状态，调用不同的函数
    4. 首先拿到所有的回调，新建两个数组，分别存储成功和失败的回调，调用then的时候，
    5. 在status发生变化
+```javascript
+const promise2 = promise1.then(onFulfulled, onRejected)；
+```
+1. onFulfilled或者onRejected的执行结果为x， 调用resolvePromise
+2. onFulfilled 或者 onRejected在执行过程中，刨出异常，promise2需要被rejected
+3. 如果onFulfilled不是一个函数，promise2 将以promise1 的**value 触发fulfilled**
+4. 如果onRejected不是一个函数，promise2 将以promise1 的**reason 触发fulfilled**
+
+
+
 7. then的返回值
-   1. 抛出异常，新的promise也需要刨出异常
-   2. 
+   1. 如果onFulfilled或者onRejected抛出异常e，新的promise必须reject e；
+   2. 返回值是一个promise函数
+   3. 如果onFulfilled不是一个函数， 且promise1成功执行，promise2必须返回同样的状态和value
+   4. 如果onReject不是一个函数，promise1 拒绝执行，promise2必须返回同样的状态和reason
+   5. 如果onFulfilled或者onRejected返回一个x，运行resolvePromise方法
 # generator async

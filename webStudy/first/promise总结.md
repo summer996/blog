@@ -5,3 +5,10 @@
 5. generator的特性是什么？如果遍历一次，只调用一次next，会输出所有值嘛
 6. async await规范
 7. 手写promise
+
+
+
+#### 问题
+  
+为什么promise resolve一个value，最后输出的的value却是undefined
+
