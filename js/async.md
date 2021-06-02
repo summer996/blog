@@ -6,53 +6,53 @@
 async function async1() {
   let result = await async2();
   console.log(result);
-  console.log('async1 end');
+  console.log('1');
 }
 async function async2() {
-  console.log('async2 end');
-  return 'async2 result';
+  console.log('2');
+  return '6';
 }
 
 async1();
 
 new Promise((resolve) => {
-  console.log('Promise');
+  console.log('3');
   resolve();
 })
   .then(function () {
-    console.log('promise1');
+    console.log('4');
   })
   .then(function () {
-    console.log('promise2');
+    console.log('5');
   });
 
-//输出结果：async2 end => Promise => async2 result => async1 end => promise1 => promise2
+//输出结果：async2 end => Promise => async2 result => async1 end => promise1 => promise2    236145
 ```
 ```
 async function async1() {
   let result = await async2();
   console.log(result);
-  console.log('async1 end');
+  console.log(1);
 }
 async function async2() {
-  console.log('async2 end');
-  return Promise.resolve('asnyc2 resolve result');
+  console.log('2');
+  return Promise.resolve('3');
 }
 
 async1();
 
 new Promise((resolve) => {
-  console.log('Promise');
+  console.log('4');
   resolve();
 })
   .then(function () {
-    console.log('promise1');
+    console.log('5');
   })
   .then(function () {
-    console.log('promise2');
+    console.log('6');
   });
 
-//输出结果： async2 end => Promise => promise1 => promise2 => asnyc2 resolve result => async1 end
+//输出结果： async2 end => Promise => promise1 => promise2 => asnyc2 resolve result => async1 end  245631
 ```
 产生以上两种不同的结果的原因可以总结如下：（关键在于先注册还是后注册为微任务）
 1. 如果awati后面的函数返回的是一个普通值，例如：'async2 result'，这时候相当与把await后面的代码注册为微任务，相当于promise.then(await后面的代码)，遇见await就跳出当前函数，继续执行async1后面的代码，当本轮宏任务执行完毕之后，就会去执行微任务队列，此时注意，在promise.then注册微任务之前，已经有微任务注册，就是例子1中await后面的代码

@@ -14,3 +14,18 @@ Child.prototype = new Animal();
 console.log(Child.prototype);
 let c = new Child();
 console.log(c.__proto__.constructor);
+
+
+function customNew(fn, ...args) {
+  //创建新对象
+  let obj = {};
+
+  //将新对象的原型指向构造原型
+  obj.__proto__ = fn.prototype;
+
+  //将this指向新对象,执行构造函数并获取结果
+  let result = fn.apply(obj, args);
+
+  return typeof result === "object" ? result : obj;
+
+}

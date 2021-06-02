@@ -1,5 +1,5 @@
 export const NODE_FLAG = {
-  ELEMENT: 1,
+  EL: 1,
   TEXT: 1 << 1, //2
 }
 
@@ -9,7 +9,7 @@ const createText = (text) => {
     props: {
       nodeValue: `${text}`
     },
-    $$: { flag: NODE_FLAG.Text }
+    $$: { flag: NODE_FLAG.TEXT }
   }
 }
 
@@ -21,7 +21,7 @@ const normalize = (children = []) => {
 
 
 const createVnode = (type, props, key, $$) => {
-  //这就是虚拟节点的结构，虚拟dom就是有虚拟节点组成的
+  //step1 这就是虚拟节点的结构，虚拟dom就是有虚拟节点组成的
   return {
     type,
     props,
@@ -32,6 +32,7 @@ const createVnode = (type, props, key, $$) => {
 
 export const h = (type, props, ...kids) => {
   /**
+   * step2 定义生成vDom对象的方法
    * type有5中类型
    * 1、svg
    * 2、html
