@@ -1,22 +1,84 @@
+// 1. 一个继承自 Player 的新对象 p1 被创建了。
+// 2. p1.**proto** = Player.prototype，p1 的**proto**指向 Player 的原型对象
+// 3. 将 this 指向新创建的对象 p1
+// 4. 返回这个新对象 p1
+
+function Player(name) {
+  this.name = name;
+}
+
+function objectFactory() {
+  //创建新对象
+  let o = new Object();
+
+  //获取构造函数
+  let FunctionConstructor = [].shift.call(arguments); // Player 参数,参数,
+  //将新对象的原型指向构造函数的原型
+  o.__proto__ = FunctionConstructor.prototype;
+
+  //改变新对象的this指向
+  let resultObj = FunctionConstructor.apply(o, arguments); // 参数数组
+  return typeof resultObj === 'object' ? resultObj : o;
+}
+
+const p1 = objectFactory(Player, '路白');
+
+console.log(p1);
+
+/**
+ * 
+ * 创建一个新对象
+ * 将新对象的原型指向构造函数的原型
+ * 将this指向新对象 
+ *  如果构造函数没有显示的返回值，那么返回this
+ *  如果构造函数有显示返回值，并且是基本类型，返回this
+ *  如果构造函数有显示返回值，并且是对象类型，则返回该对象
+ */
+
 /**
  * new 做了什么
- * 1、创建一个新对象
+ * 1、创建一个新对象  
  * 2、给新对象绑定作用域
  * 3、给新对象添加属性
  * 4、返回新对象
  */
-
-const news = () => {
+ 
+const newss = (fn, ...arg) => {
+  //创建新对象
   let obj = {};
-  let constructor = Array.prototype.shift.call(arguments);
-  obj.__proto__ = constructor.prototype;
+  //添加原型
+  obj.__proto__ = fn.prototype;
+  //运行构造函数fn，改变this
+  let res = fn.apply(obj, arg);
 
-  let res = constructor.apply(obj, arguments);
+  //判断结果是否为对象
+  // 1、如果构造函数没有显示的返回值，那么返回this
+  // function Player(color){
+  //   this.color = color;
+  // }
+  // const white = new Player('#fff');
+  // console.log(white) //Player {color: '#fff'}
 
-  return res instanceof Object ? res : obj;
+  // 2、如果构造函数有显示返回值，并且是基本类型，返回this
+  // function Player(color){
+  //   this.color = color;
+  //   return 1;
+  // }
+  // const white = new Player('#fff');
+  // console.log(white) //Player {color: '#fff'}
+
+  // 3、如果构造函数有显示返回值，并且对象，则返回对象
+  // function Player(color){
+  //   this.color = color;
+  //   return {a: '22222'};
+  // }
+  // const white = new Player('#fff');
+  // console.log(white) // {a: '22222'};
+
+  //所以在返回的时候需要判断一下构造函数执行结果
+  return typeof res === 'object' ? res : obj;
 
 }
- 
 
 //fangdou
 const debounce = (fn, timeout) => {
