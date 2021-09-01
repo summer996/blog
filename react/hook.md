@@ -1,3 +1,6 @@
+### 生命周期图
+https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/；
+
 ### 简介
 hooks是16.8添加的新特性，可以在不编写class的情况下使用state以及其他生命周期
 ### 为什么会有Hooks
@@ -16,6 +19,20 @@ useState的状态更新函数类似class组件的this.setState，但是它不会
 React会等待浏览器完成画面渲染之后，才会延迟调用useEffect，默认情况下（如果添加依赖，只有依赖发生变化，才会调用）useEffect在每次渲染后，都会调用，包括第一次渲染
 
 返回一个函数就可以清除副作用，通过hook可以把组件内相关的副作用组织在一起，例如监听和取消监听
+
+与componentDidMount、componentDidUpdate把不同的是（render之后渲染）传递给effect的函数会在浏览器完成布局与绘制之后，在一个延迟事件中被调用
+
+虽然 useEffect 会在浏览器绘制后延迟执行，但会保证在任何新的渲染前执行。在开始新的更新前，React 总会先清除上一轮渲染的 effect。
+
+### useMemo
+在渲染期间就执行了，所以不能在useMemo中有任务副作用操作
+
+### Hook规则
+- 不要在循环，条件或嵌套函数中调用hook
+- 只在React中调用函数组件中调用Hook
+- 可以使用eslint-plugin-react-hooks的eslint插件来强制执行这两条规则
+
+### 自定义Hook
 
 ### useState是如何对应组件
 
