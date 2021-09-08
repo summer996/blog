@@ -29,7 +29,7 @@ const promise2 = promise1.then(onFulfulled, onRejected)；
 ```
 1. onFulfilled或者onRejected的执行结果为x， 调用resolvePromise
 2. onFulfilled 或者 onRejected在执行过程中，刨出异常，promise2需要被rejected
-3. 如果onFulfilled不是一个函数，promise2 将以promise1 的**value 触发fulfilled**
+3. 如果onFulfilled不是一个函数，promise2 将以promise1 的**value 触发fulfilled**,就是值透传
 4. 如果onRejected不是一个函数，promise2 将以promise1 的**reason 触发fulfilled**
 
 
