@@ -168,19 +168,14 @@ class MyPromise {
         },
         reject
       )
-    } else if (typeof x === 'object' || this.isFuntion(x)) {
-      //7.1 判断x
-      if (x === null) {
-        return resolve(x);
-      }
-
-      let then = null;
-        try {
-          then = x.then;
-        } catch (e) {
-          return reject(e)
-      }
-      
+    } else if (x !== null && (typeof x === 'object' || this.isFuntion(x))) {
+      // let then = null;
+      //   try {
+      //     then = x.then;
+      //   } catch (e) {
+      //     return reject(e)
+      //   }
+      let then = x.then;
       if (this.isFuntion(then)) {
         let called = false;
         try {
@@ -199,6 +194,7 @@ class MyPromise {
           );//then本来就来至x，为了避免错误，手动指向一下this为x
         } catch (e) {
           if (called) return;
+          called = true;
           reject(e);
         }
       } else {
