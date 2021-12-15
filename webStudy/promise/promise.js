@@ -1,94 +1,181 @@
-//class
-//定义状态
-const PENDING = 'pending';
-const FULFILLED = 'fulfilled';
-const REJECTED = 'rejected';
+function Promise(fn) {
+  const self = this;
+  self.status = "pending";
+  self.value = null;
+  self.reason = null;
+  self.onFulfilledCallback = [];
+  self.onRejectedCallback = [];
 
-class MPromise {
-  FULFILLED_CALLBACK_LIST = [];
-  REJECTED_CALLBACK_LIST = [];
-  _status = PENDING;
-  constructor(fn) {
-    //初始化状态
-    this.status = PENDING;
-    this.value = null;
-    this.reason = null;
-    try {
-       fn(this.resolve.bind(this), this.reject.bind(this)))
-    } catch (e) {
-      this.reject(e);
-     }
-  }
-  get status() {
-    return this._status;
-  }
-  
-  set status(newStatus) {
-    this._status = newStatus;
-
-    switch (newStatus) {
-      case FULFILLED: {
-        this.FULFILLED_CALLBACK_LIST.forEach(fn => fn(this.value));
-        break;
-      }
-      case REJECTED: {
-        this.REJECTED_CALLBACK_LIST.forEach(fn => fn(this.reason));
-        break;
-      }
-    }
-  }
-  resolve(value) {
-    if (this.status === PENDING) {
-      this.status = FULFILLED;
-      this.value = value;
-    }
-    
-  }
-
-  reject(reason) {
-    if (this.status === PENDING) {
-      this.status = REJECTED;
-      this.value = reason;
+  function resolve(value) {
+    if (self.status === "pending") {
+      self.status = "fulfilled";
+      self.value = value;
+      self.onFulfilledCallback.forEach((fn) => fn());
     }
   }
 
-  isFunction(param) {
-    return typeof param === 'function';
+  function reject(e) {
+    if (self.status === "pending") {
+      self.status = "rejected";
+      self.reason = e;
+      self.onRejectedCallback.forEach((fn) => fn());
+    }
   }
-
-  then(onFulfilled, onRejected) {
-    const fulfilledFn = this.isFunction(onFulfilled) ? onFulfilled : (value) => value;
-    const rejectedFn = this.isFunction(onRejected) ? onRejected : (reason) => { throw reason; }
-    
-    const fulfilledFnWithCatch = (resolve, reject) => {
-      try {
-        fulfilledFn(this.value);
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    switch (this.status) {
-      case FULFILLED: {
-        return new MPromise(fulfilledFnWithCatch);
-        // fulfilledFnWithCatch(this.value);
-        // break;
-      }
-      case REJECTED: {
-        rejectedFn(this.reson);
-        break;
-      }
-      case PENDING: {
-        return new MPromise((resolve, reject) => {
-          this.FULFILLED_CALLBACK_LIST.push(onFulfilled);
-          this.REJECTED_CALLBACK_LIST.push(onRejected);
-        })
-        
-      }
-    }
+  try {
+    fn(resolve, reject);
+  } catch (err) {
+    reject(err);
   }
 }
 
-const promise = new MPromise((resolve, reject) => {
+Promise.prototype.then = function (onFulfilled, onRejected) {
+  onFulfilled =
+    typeof onFulfilled === "function" ? onFulfilled : (value) => value;
+  onRejected =
+    typeof onRejected === "function"
+      ? onRejected
+      : (reason) => {
+          throw reason;
+        };
 
-})
+  const promise2 = new Promise((resolve, reject) => {
+    if (self.status === "pending") {
+      self.onFulfilledCallback.push(() => {
+        setTimeout(() => {
+          try {
+            if (typeof onFulfilled !== "function") {
+              //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value) 就是所谓的值穿透
+              resolve(self.value);
+            } else {
+              let x = onFulfilled(self.value);
+              resolvePromise(promise2, x, resolve, reject);
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+
+      self.onRejectedCallback.push(() => {
+        setTimeout(() => {
+          try {
+            if (typeof onRejected !== "function") {
+              //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value)
+              reject(self.reason);
+            } else {
+              let x = onRejected(self.reason);
+              resolvePromise(promise2, x, resolve, reject);
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+    } else if (self.status === "fulfilled") {
+      setTimeout(() => {
+        try {
+          if (typeof onFulfilled !== "function") {
+            //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value)
+            resolve(self.value);
+          } else {
+            let x = onFulfilled(self.value);
+            resolvePromise(promise2, x, resolve, reject);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    } else if (self.status === "rejected") {
+      setTimeout(() => {
+        try {
+          if (typeof onRejected !== "function") {
+            //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value)
+            reject(self.reason);
+          } else {
+            let x = onRejected(self.reason);
+            resolvePromise(promise2, x, resolve, reject);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+  });
+  return promise2;
+};
+function resolvePromise(promise2, x, resolve, reject) {
+  if (promise2 === x) {
+    return reject("循环调用promise");
+  }
+
+  if (x instanceof Promise) {
+  } else if (x !== null && (typeof x === "function" || typeof x === "object")) {
+    try {
+      let then = x.then;
+      if (typeof then === "function") {
+        let used = null;
+        then.call(
+          x,
+          (y) => {
+            if (used) return;
+            used = true;
+            resolvePromise(promise2, y, resolve, reject);
+          },
+          (e) => {
+            if (used) return;
+            used = true;
+            reject(e);
+          }
+        );
+      } else {
+        resolve(x);
+      }
+    } catch (e) {
+      reject(e);
+    }
+  } else {
+    resolve(x);
+  }
+}
+
+function resolvePromises(promise2, x, resolve, reject) {
+  if (promise2 === x) {
+    return reject("循环调用promise");
+  }
+
+  if (x !== null && (typeof x === "function" || typeof x === "object")) {
+    try {
+      let then = x.then;
+      let used = null;
+      if (typeof then === "function") {
+        try {
+          then.call(
+            x,
+            (y) => {
+              if (used) return;
+              used = true;
+              resolvePromise(promise2, y, resolve, reject);
+            },
+            (e) => {
+              if (used) return;
+              used = true;
+              reject(e);
+            }
+          );
+        } catch (e) {
+          if (used) return;
+          used = true;
+          reject(e);
+        }
+      } else {
+        if (used) return;
+        used = true;
+        resolve(x);
+      }
+    } catch (err) {
+      reject(err);
+    }
+  } else {
+    resolve(x);
+  }
+}

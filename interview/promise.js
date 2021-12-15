@@ -32,16 +32,15 @@ class Promise {
   then(onFulFilled, onRejected) {
     onFulFilled = typeof onFulFilled === 'function' ? onFulFilled : value => value;
     onRejected = typeof onRejected === 'function' ? onRejected : reason => {return new Error('不是一个函数')}
-    const promise2 = () => {
-      return new Promise((resolve, rejected) => {
+    const promise2 = new Promise((resolve, reject) => {
         if (this.state === 'pending') {
           this.onFulfilledFn.push(() => {
             setTimeout(() => {
               try {
                 let x = onFulFilled(this.value);
-                this.resolvePromise(promise2, x, resolve, rejected);
+                this.resolvePromise(promise2, x, resolve, reject);
               } catch (err) {
-                rejected(err);
+                reject(err);
               }
             })
           })
@@ -77,7 +76,6 @@ class Promise {
           })
         }
       })
-    }
     return promise2;
   }
 
