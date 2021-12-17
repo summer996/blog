@@ -43,13 +43,8 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       self.onFulfilledCallback.push(() => {
         setTimeout(() => {
           try {
-            if (typeof onFulfilled !== "function") {
-              //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value) 就是所谓的值穿透
-              resolve(self.value);
-            } else {
-              let x = onFulfilled(self.value);
-              resolvePromise(promise2, x, resolve, reject);
-            }
+            let x = onFulfilled(self.value);
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
             reject(e);
           }
@@ -59,13 +54,8 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
       self.onRejectedCallback.push(() => {
         setTimeout(() => {
           try {
-            if (typeof onRejected !== "function") {
-              //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value)
-              reject(self.reason);
-            } else {
-              let x = onRejected(self.reason);
-              resolvePromise(promise2, x, resolve, reject);
-            }
+            let x = onRejected(self.reason);
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
             reject(e);
           }
@@ -74,13 +64,8 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
     } else if (self.status === "fulfilled") {
       setTimeout(() => {
         try {
-          if (typeof onFulfilled !== "function") {
-            //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value)
-            resolve(self.value);
-          } else {
-            let x = onFulfilled(self.value);
-            resolvePromise(promise2, x, resolve, reject);
-          }
+          let x = onFulfilled(self.value);
+          resolvePromise(promise2, x, resolve, reject);
         } catch (e) {
           reject(e);
         }
@@ -88,13 +73,8 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
     } else if (self.status === "rejected") {
       setTimeout(() => {
         try {
-          if (typeof onRejected !== "function") {
-            //如果onFulfilled不是一个函数,promise2直接返回resolve(self.value)
-            reject(self.reason);
-          } else {
-            let x = onRejected(self.reason);
-            resolvePromise(promise2, x, resolve, reject);
-          }
+          let x = onRejected(self.reason);
+          resolvePromise(promise2, x, resolve, reject);
         } catch (e) {
           reject(e);
         }
