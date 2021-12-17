@@ -38,7 +38,7 @@ console.log(p1);
 /**
  * new 做了什么
  * 1、创建一个新对象  
- * 2、给新对象绑定作用域
+ * 2、给新对象绑定作用域 prototype
  * 3、给新对象添加属性
  * 4、返回新对象
  */
@@ -78,6 +78,17 @@ const newss = (fn, ...arg) => {
   //所以在返回的时候需要判断一下构造函数执行结果
   return typeof res === 'object' ? res : obj;
 
+}
+
+const myNew = function(fn, ...arg) {
+  //创建一个新对象
+  const obj = {};
+  //改变原型
+  obj.__proto__ = fn.prototype;
+  //改变this指向
+  const res = fn.apply(obj, [...arg]);
+
+  return typeof res === 'object' ? res : obj;
 }
 
 //fangdou
