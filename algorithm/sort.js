@@ -1,18 +1,3 @@
-//冒泡排序
-var sort = (nums) => {
-  let len = nums.length;
-  for (let i = 0; i < len; i++) {
-    for (let j = 0; j < len - 1 - i; j++) {
-      if (nums[j] > nums[j + 1]) {
-        let temp = nums[j];
-        nums[j] = nums[j + 1];
-        nums[j + 1] = temp;
-      }
-    }
-  }
-  return nums;
-};
-
 //选择排序
 
 var selectSort = (nums) => {
@@ -89,8 +74,7 @@ function maxLength(arr) {
     }
     map.set(arr[i], i);
 
-    max = Math.max(max, j+1)
-
+    max = Math.max(max, j + 1);
   }
   return max;
 }
@@ -103,7 +87,6 @@ function mergeTwoLists(l1, l2) {
     if (l1.val <= l2.val) {
       current.next = l1;
       l1 = l1.next;
-
     } else {
       current.next = l2;
       l2 = l2.next;
