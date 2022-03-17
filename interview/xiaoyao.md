@@ -5,6 +5,7 @@ MVVM与MVC最大的区别就是：它实现了View和Model的自动同步，也�
 
 
 ### react hook是如何关联数据的
+//https://developer.aliyun.com/article/784027#slide-6
 hook是相互独立的，不同组件调用同一个hook也能保证各自状态的独立性。
 ```js
 export function useState(initstate) {

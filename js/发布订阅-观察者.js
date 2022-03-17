@@ -106,3 +106,84 @@ pubsub.subscribe('lichunying', (arg) => { console.log('lichunying', arg) });
 pubsub.subscribe('lili', (arg) => { console.log('lili', arg) });
 //执行
 pubsub.publish('lichunying', 'shiwoya')
+
+
+/**
+ * 观察者
+ * 观察到对象更新了，观察者都要执行事件
+ */
+
+class Subject {
+  constructor() {
+    this.list = [];
+  }
+
+  add(fn) {
+    this.list.push(fn);
+  }
+
+  notify(value) {
+    this.list.forEach(fn => fn.call(this, value))
+  }
+}
+
+var sub = new Subject();
+sub.add((value) => {console.log('目标1'+value)})
+sub.add((value) => {
+  console.log("目标2" + value);
+});
+
+//通知观察者
+sub.notify('fads')
+
+//es5
+function Sales(){
+  this.list = [];
+}
+//订阅
+Sales.prototype.addObserver = function(fn) {
+  this.list.push(fn)
+}
+//发布
+Sales.prototype.notify = function(value) {
+  this.list.forEach(fn => fn(value))
+}
+
+//创建事件
+let sales = new Sales();
+sales.addObserver((value) => {
+  console.log("目标1：", value);
+});
+
+sales.notify('fdfad')
+
+
+/**
+ * 发布订阅
+ * 可以定向发布
+ */
+
+function Collection() {
+  this.list = {};
+}
+
+Collection.prototype.addObserver = function(type, fn) {
+  if(!this.list[type]) {
+    this.list[type] = []
+  }
+  this.list[type].push(fn);
+}
+
+Collection.prototype.notify = function(type, value) {
+  let list = this.list[type];
+  if(list) {
+    list.forEach(fn => fn(value));
+  }
+}
+
+let newEvent = new Collection();
+newEvent.addObserver('buy', (value) => {
+  console.log(`买了${value}`)
+})
+
+newEvent.notify('buy', '一本书')
